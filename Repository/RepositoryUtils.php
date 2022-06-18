@@ -4,9 +4,11 @@ namespace Mechanic\CqrsKit\Repository;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use LogicException;
+use Mechanic\CqrsKit\Entity\EntityUtils;
 use Symfony\Contracts\Service\Attribute\Required;
 use function sprintf;
 
@@ -27,11 +29,15 @@ trait RepositoryUtils
         $this->orm = $em;
     }
 
-    private function qb(string $rootAlias, ?string $indexBy = null): QueryBuilder
+    private function qb(string $rootAlias = null, ?string $indexBy = null): QueryBuilder
     {
-        return $this->orm
-            ->getRepository($this->getEntityName())
-            ->createQueryBuilder($rootAlias, $indexBy);
+        return $this->repo()
+            ->createQueryBuilder($rootAlias ?? EntityUtils::alias($this->getEntityName()), $indexBy);
+    }
+
+    private function repo(): EntityRepository
+    {
+        return $this->orm->getRepository($this->getEntityName());
     }
 
     private function findOrThrowError($id, $lockMode = null, $lockVersion = null)

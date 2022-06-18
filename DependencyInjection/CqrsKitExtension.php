@@ -20,6 +20,7 @@ class CqrsKitExtension extends Extension
     {
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('messenger.php');
+        $loader->load('domain_events.php');
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
