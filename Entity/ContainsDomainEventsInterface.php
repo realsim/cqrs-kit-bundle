@@ -2,7 +2,7 @@
 
 namespace Mechanic\CqrsKit\Entity;
 
-interface ContainerDomainEventsInterface
+interface ContainsDomainEventsInterface
 {
     public function releaseEvents(): iterable;
 }

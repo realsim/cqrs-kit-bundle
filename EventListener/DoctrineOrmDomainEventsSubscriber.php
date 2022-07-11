@@ -52,7 +52,7 @@ class DoctrineOrmDomainEventsSubscriber implements EventSubscriber
         $uow = $args->getEntityManager()->getUnitOfWork();
 
         foreach ($uow->getIdentityMap() as $class => $entities) {
-            if (!is_subclass_of($class, ContainerDomainEventsInterface::class)) {
+            if (!is_subclass_of($class, ContainsDomainEventsInterface::class)) {
                 continue;
             }
 
