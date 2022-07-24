@@ -7,7 +7,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
-use Mechanic\CqrsKit\Entity\ContainerDomainEventsInterface;
+use Mechanic\CqrsKit\Entity\ContainsDomainEventsInterface;
 use Mechanic\CqrsKit\Messenger\EventDispatcher;
 
 class DoctrineOrmDomainEventsSubscriber implements EventSubscriber
@@ -81,7 +81,7 @@ class DoctrineOrmDomainEventsSubscriber implements EventSubscriber
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof ContainerDomainEventsInterface) {
+        if ($entity instanceof ContainsDomainEventsInterface) {
             $this->entities->add($entity);
         }
     }

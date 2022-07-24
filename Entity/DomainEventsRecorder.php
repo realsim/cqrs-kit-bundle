@@ -6,6 +6,10 @@ trait DomainEventsRecorder
 {
     private array $domainEvents = [];
 
+    /**
+     * Для отложенной инициализации событий их можно обернуть в callable.
+     * В таком случае инициализация события будет выполнена при вызове метода releaseEvents.
+     */
     private function recordEvent($event): void
     {
         $this->domainEvents[] = $event;
@@ -16,6 +20,12 @@ trait DomainEventsRecorder
         $events = $this->domainEvents;
         $this->domainEvents = [];
 
-        return $events;
+        foreach ($events as $event) {
+            if (is_callable($event)) {
+                $event = $event();
+            }
+
+            yield $event;
+        }
     }
 }
