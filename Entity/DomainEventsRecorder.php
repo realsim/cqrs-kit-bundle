@@ -15,6 +15,11 @@ trait DomainEventsRecorder
         $this->domainEvents[] = $event;
     }
 
+    public function clearEvents(): void
+    {
+        $this->domainEvents = [];
+    }
+
     public function releaseEvents(): iterable
     {
         $events = $this->domainEvents;
@@ -22,7 +27,7 @@ trait DomainEventsRecorder
 
         foreach ($events as $event) {
             if (is_callable($event)) {
-                $event = $event();
+                $event = $event($this);
             }
 
             yield $event;
