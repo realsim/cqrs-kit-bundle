@@ -76,4 +76,20 @@ trait FetcherUtils
 
         return $hydrator($data);
     }
+
+    private function iterate(QueryBuilder|Query $query, callable $rowHydrator = null): iterable
+    {
+        if ($query instanceof QueryBuilder) {
+            $query = $query->getQuery();
+        }
+
+        if (null === $rowHydrator) {
+            $rowHydrator = static fn($v) => $v;
+        }
+
+        $iterator = $query->toIterable(hydrationMode: Query::HYDRATE_ARRAY);
+        foreach ($iterator as $row) {
+            yield $rowHydrator($row);
+        }
+    }
 }
