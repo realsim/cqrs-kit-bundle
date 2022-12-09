@@ -46,21 +46,9 @@ trait CommandDispatcherTrait
                     throw $ex;
                 }
 
-                $domainViolation = null;
+                $rootCause = $this->extractRootCauseException($ex);
 
-                switch (true) {
-                    case $ex instanceof DomainException:
-                        $domainViolation = $ex;
-                        break;
-                    case $ex instanceof HandlerFailedException:
-                        $domainExceptions = $ex->getNestedExceptionOfClass(DomainException::class);
-                        if (\count($domainExceptions) > 0) {
-                            $domainViolation = \reset($domainExceptions);
-                        }
-                        break;
-                }
-
-                if (null !== $domainViolation) {
+                if ($rootCause instanceof DomainException) {
                     $form->addError(new FormError($ex->getMessage()));
                 } else {
                     throw $ex;
@@ -69,5 +57,24 @@ trait CommandDispatcherTrait
         }
 
         return null;
+    }
+
+    protected function extractRootCauseException(Throwable $ex): Throwable
+    {
+        $domainViolation = null;
+
+        switch (true) {
+            case $ex instanceof DomainException:
+                $domainViolation = $ex;
+                break;
+            case $ex instanceof HandlerFailedException:
+                $domainExceptions = $ex->getNestedExceptionOfClass(DomainException::class);
+                if (\count($domainExceptions) > 0) {
+                    $domainViolation = \reset($domainExceptions);
+                }
+                break;
+        }
+
+        return $domainViolation ?: $ex;
     }
 }
