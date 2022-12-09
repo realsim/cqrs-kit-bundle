@@ -9,9 +9,17 @@ trait DomainEventsRecorder
     /**
      * Для отложенной инициализации событий их можно обернуть в callable.
      * В таком случае инициализация события будет выполнена при вызове метода releaseEvents.
+     *
+     * @param bool $recordOnce Не записывать одинаковые повторяющиеся события несколько раз
      */
-    private function recordEvent($event): void
+    private function recordEvent($event, bool $recordOnce = false): void
     {
+        if (true === $recordOnce) {
+            if (in_array($event, $this->domainEvents, true)) {
+                return;
+            }
+        }
+
         $this->domainEvents[] = $event;
     }
 
