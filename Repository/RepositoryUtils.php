@@ -56,4 +56,9 @@ trait RepositoryUtils
         $this->orm->persist($entity);
         $this->orm->flush();
     }
+
+    private function createBulkProcessor(int $bulkSize): BulkProcessor
+    {
+        return new BulkProcessor($this->orm, $this->getEntityName(), $bulkSize);
+    }
 }
