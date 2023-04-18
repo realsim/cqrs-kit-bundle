@@ -5,6 +5,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Mechanic\CqrsKit\Messenger\CommandDispatcher;
 use Mechanic\CqrsKit\Messenger\EventDispatcher;
 use Mechanic\CqrsKit\Messenger\HandledResultExtractor;
+use Mechanic\CqrsKit\Messenger\Middleware\RequiredRoleMiddleware;
 use Mechanic\CqrsKit\Messenger\QueryDispatcher;
 
 return static function (ContainerConfigurator $container): void {
@@ -31,5 +32,11 @@ return static function (ContainerConfigurator $container): void {
                 abstract_arg('event bus service'),
             ])
             ->alias(EventDispatcher::class, 'cqrs.messenger.event_dispatcher')
+
+        ->set('cqrs.messenger.middleware.require_role', RequiredRoleMiddleware::class)
+            ->args([
+                service('security.authorization_checker'),
+            ])
+            ->alias(RequiredRoleMiddleware::class, 'cqrs.messenger.middleware.require_role')
     ;
 };
